@@ -187,6 +187,102 @@
     </footer>
 
     <!-- JavaScript Files -->
-    <script src="js/script.js"></script>
+    <script src="JS/script.js"></script>
+    <script>
+        // Initialization and simple search wiring for Demand API
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Ensure API base URL and affiliate are set from storage
+            const savedBase = localStorage.getItem('api_base_url') || 'https://demandapi-sandbox.booking.com/3.2';
+            API.setBaseUrl(savedBase);
+            const aff = localStorage.getItem('affiliate_id');
+            if (aff) API.setAffiliateId(aff);
+
+            if (!API.getToken()) {
+                // Not configured yet — go to setup
+                window.location = 'login.html';
+                return;
+            }
+
+            // Inject a small search form above results area if not present
+            const container = document.querySelector('#browse-cars .max-w-7xl');
+            const searchHtml = `
+                <form id="search-form" class="mb-6 flex gap-4 items-end">
+                    <div>
+                        <label class="text-sm text-gray-600">City (numeric id)</label>
+                        <input id="city" class="mt-1 block border rounded p-2" placeholder="e.g. -2140479" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-600">Check-in</label>
+                        <input id="checkin" type="date" class="mt-1 block border rounded p-2" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-600">Check-out</label>
+                        <input id="checkout" type="date" class="mt-1 block border rounded p-2" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-600">Adults</label>
+                        <input id="adults" type="number" min="1" value="1" class="mt-1 block border rounded p-2 w-20" />
+                    </div>
+                    <div>
+                        <button class="bg-primary text-white px-4 py-2 rounded" type="submit">Search</button>
+                    </div>
+                </form>`;
+            container.insertAdjacentHTML('afterbegin', searchHtml);
+
+            const searchForm = document.getElementById('search-form');
+            searchForm.addEventListener('submit', async (ev) => {
+                ev.preventDefault();
+                const city = parseInt(document.getElementById('city').value, 10) || undefined;
+                const checkin = document.getElementById('checkin').value;
+                const checkout = document.getElementById('checkout').value;
+                const adults = parseInt(document.getElementById('adults').value, 10) || 1;
+
+                // Minimal required payload as per spec
+                const payload = {
+                    booker: { country: 'nl', platform: 'desktop' },
+                    checkin: checkin || new Date(Date.now() + 86400000).toISOString().slice(0,10),
+                    checkout: checkout || new Date(Date.now() + 2*86400000).toISOString().slice(0,10),
+                    guests: { number_of_adults: adults, number_of_rooms: 1 }
+                };
+                if (city) payload.city = city;
+
+                const resultCountEl = document.getElementById('result-count');
+                const grid = document.getElementById('car-grid');
+                resultCountEl.textContent = 'Searching...';
+                grid.innerHTML = '';
+
+                try {
+                    const res = await API.searchAccommodations(payload);
+                    const items = res && res.data ? res.data : [];
+                    resultCountEl.textContent = `${items.length} results`;
+                    if (!items.length) {
+                        grid.innerHTML = '<p class="text-gray-600">No results</p>';
+                        return;
+                    }
+                    items.forEach(item => {
+                        const name = item.id || 'Unknown';
+                        const price = item.price && item.price.display ? item.price.display.booker_currency || JSON.stringify(item.price.display) : '';
+                        const deepLink = item.deep_link_url || item.url || '#';
+                        const card = document.createElement('div');
+                        card.className = 'bg-white rounded-lg shadow p-4';
+                        card.innerHTML = `<h3 class="font-bold text-lg">Hotel ${name}</h3><p class="text-sm text-gray-600">Price: ${price}</p><a class="text-primary mt-2 inline-block" href="${deepLink}" target="_blank">View on Booking</a>`;
+                        grid.appendChild(card);
+                    });
+                } catch (err) {
+                    if (err.status === 401) {
+                        window.location = 'login.html';
+                        return;
+                    }
+                    console.error(err);
+                    resultCountEl.textContent = 'Error fetching results';
+                    grid.innerHTML = `<pre class="text-sm text-red-600">${err.body ? JSON.stringify(err.body,null,2) : err.message}</pre>`;
+                }
+            });
+
+            // Trigger a default search to populate the page
+            document.getElementById('city').value = '';
+            searchForm.dispatchEvent(new Event('submit'));
+        });
+    </script>
 </body>
 </html>
