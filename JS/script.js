@@ -175,9 +175,6 @@ function displayCars(cars) {
   `).join('');
 }
 
-// ============================================
-// FILTER FUNCTIONS
-// ============================================
 
 function applyFilters() {
   let filtered = [...allCars];
