@@ -287,12 +287,10 @@ const CarAPI = {
     await this._simulateDelay();
 
     try {
-      // Validate booking data
       if (!bookingData.carId || !bookingData.userId || !bookingData.pickupDate || !bookingData.returnDate) {
         return this._createResponse(false, null, 'Missing required booking information');
       }
 
-      // Check if car exists and is available
       const car = this.database.find(c => c.id === bookingData.carId);
       if (!car) {
         return this._createResponse(false, null, 'Car not found');
@@ -301,7 +299,6 @@ const CarAPI = {
         return this._createResponse(false, null, 'Car is not available');
       }
 
-      // Create booking confirmation
       const booking = {
         id: Date.now(),
         bookingNumber: `BK${Date.now()}`,
@@ -325,8 +322,6 @@ const CarAPI = {
     await this._simulateDelay();
 
     try {
-      // In a real API, this would fetch from a database
-      // For now, we'll return from localStorage
       const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
       const userBookings = bookings.filter(b => b.userId === userId);
 

@@ -1,20 +1,8 @@
-// ============================================
-// MAIN APPLICATION SCRIPT
-// Uses CarAPI for all data operations
-// ============================================
-
 // Global state
 let allCars = [];
 let filteredCars = [];
 let currentUser = null;
 
-// ============================================
-// AUTHENTICATION FUNCTIONS
-// ============================================
-
-/**
- * Check if user is logged in
- */
 function checkAuthStatus() {
   const userStr = localStorage.getItem('currentUser');
   if (userStr) {
@@ -65,18 +53,11 @@ function updateAuthUI() {
   }
 }
 
-/**
- * Logout user
- */
 function logout() {
   localStorage.removeItem('currentUser');
   currentUser = null;
   window.location.href = 'index.html';
 }
-
-// ============================================
-// CAR DATA FUNCTIONS (Using CarAPI)
-// ============================================
 
 async function loadCars() {
   try {
@@ -264,9 +245,6 @@ function updateResultCount(count) {
   }
 }
 
-// ============================================
-// BOOKING FUNCTIONS (Using CarAPI)
-// ============================================
 
 async function openBookingModal(carId) {
   if (!currentUser) {
@@ -552,9 +530,7 @@ function displayBookings(bookings) {
   `).join('');
 }
 
-/**
- * Cancel booking using API
- */
+
 async function cancelBooking(bookingId) {
   if (!confirm('Are you sure you want to cancel this booking?')) {
     return;
@@ -578,21 +554,12 @@ async function cancelBooking(bookingId) {
   }
 }
 
-
-
-// ============================================
-// EVENT LISTENERS
-// ============================================
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Check authentication status
   checkAuthStatus();
 
-  // Cars page initialization
   if (document.getElementById('cars-grid')) {
     loadCars();
 
-    // Search functionality
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
@@ -600,7 +567,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Sort functionality
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
       sortSelect.addEventListener('change', (e) => {
@@ -700,9 +666,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
 
 function showLoading() {
   const resultCount = document.getElementById('result-count');
@@ -712,7 +675,7 @@ function showLoading() {
 }
 
 function hideLoading() {
-  // Loading state is cleared by updateResultCount
+
 }
 
 function showError(message) {
