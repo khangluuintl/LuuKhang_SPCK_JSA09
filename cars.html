@@ -27,10 +27,12 @@
                     <img src="images/AutoEx (91 x 71 px) (181 x 102 px).svg" alt="AutoEx Logo" class="h-10 w-auto">
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-primary transition duration-300">Home</a>
-                    <a href="#services" class="text-gray-700 hover:text-primary transition duration-300">Services</a>
-                    <a href="#about" class="text-gray-700 hover:text-primary transition duration-300">About</a>
-                    <a href="#contact" class="text-gray-700 hover:text-primary transition duration-300">Contact</a>
+                    <a href="index.html" class="text-gray-700 hover:text-primary transition duration-300 my-auto">Home</a>
+                    <a href="cars.html" class="text-gray-700 hover:text-primary transition duration-300 my-auto">Cars</a>
+                    <a href="bookings.html" class="text-gray-700 hover:text-primary transition duration-300 my-auto">My Bookings</a>
+                    <button onclick="window.location.href='login.html'" class="my-auto bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                        Login
+                    </button>
                 </div>
                 <button class="md:hidden text-gray-700 focus:outline-none" id="mobile-menu-button">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +55,7 @@
             <div class="mb-8 flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
                     <div class="relative">
-                        <input type="text" id="car-search" placeholder="Search by car name, category, or supplier..." 
+                        <input type="text" id="search-input" placeholder="Search by car name, category, or supplier..." 
                                class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
                         <svg class="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -68,8 +70,8 @@
                         Filters
                     </button>
                     <select id="sort-select" class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
                         <option value="rating">Highest Rated</option>
                         <option value="name">Name: A to Z</option>
                     </select>
@@ -78,7 +80,7 @@
 
             <div class="flex flex-col md:flex-row gap-8">
                 <!-- Filter Sidebar -->
-                <aside id="filter-sidebar" class="w-full md:w-64 bg-white rounded-lg shadow-lg p-6 h-fit hidden md:block">
+                <aside id="filters-section" class="w-full md:w-64 bg-white rounded-lg shadow-lg p-6 h-fit hidden md:block">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold text-gray-900">Filters</h3>
                         <button id="clear-filters" class="text-sm text-primary hover:text-secondary font-semibold">Clear All</button>
@@ -87,24 +89,32 @@
                     <!-- Category Filter -->
                     <div class="mb-6">
                         <h4 class="font-semibold text-gray-900 mb-3">Category</h4>
-                        <div id="category-filters" class="space-y-2">
-                            <!-- JS Part -->
+                        <div class="flex flex-wrap gap-2">
+                            <button data-category="Sedan" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Sedan</button>
+                            <button data-category="SUV" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">SUV</button>
+                            <button data-category="Electric" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Electric</button>
+                            <button data-category="Sports" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Sports</button>
+                            <button data-category="Compact" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Compact</button>
+                            <button data-category="Luxury SUV" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Luxury SUV</button>
                         </div>
                     </div>
 
                     <!-- Transmission Filter -->
                     <div class="mb-6">
                         <h4 class="font-semibold text-gray-900 mb-3">Transmission</h4>
-                        <div id="transmission-filters" class="space-y-2">
-                            <!-- JS Part -->
+                        <div class="flex flex-wrap gap-2">
+                            <button data-transmission="Automatic" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Automatic</button>
+                            <button data-transmission="Manual" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Manual</button>
                         </div>
                     </div>
 
                     <!-- Fuel Type Filter -->
                     <div class="mb-6">
                         <h4 class="font-semibold text-gray-900 mb-3">Fuel Type</h4>
-                        <div id="fuel-filters" class="space-y-2">
-                            <!-- JS Part -->
+                        <div class="flex flex-wrap gap-2">
+                            <button data-fuel="Gasoline" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Gasoline</button>
+                            <button data-fuel="Electric" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Electric</button>
+                            <button data-fuel="Diesel" class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition">Diesel</button>
                         </div>
                     </div>
 
@@ -112,7 +122,7 @@
                     <div class="mb-6">
                         <h4 class="font-semibold text-gray-900 mb-3">Max Price per Day</h4>
                         <div class="space-y-2">
-                            <input type="range" id="price-range" min="0" max="250" value="250" step="10" class="w-full">
+                            <input type="range" id="price-slider" min="0" max="250" value="250" step="10" class="w-full">
                             <div class="flex justify-between text-sm text-gray-600">
                                 <span>$0</span>
                                 <span id="price-value" class="font-semibold text-primary">$250</span>
@@ -126,7 +136,7 @@
                     <div class="mb-4">
                         <p id="result-count" class="text-gray-600 font-semibold">Loading cars...</p>
                     </div>
-                    <div id="car-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="cars-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- JS Part -->
                     </div>
                 </div>
@@ -185,8 +195,63 @@
             </div>
         </div>
     </footer>
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-900">Book Your Car</h2>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="modal-car-details" class="mb-6">
+                    <!-- Car details will be inserted here -->
+                </div>
 
-    <!-- JavaScript Files -->
-    <script src="js/script.js"></script>
+                <form id="booking-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="pickup-date" class="block text-sm font-medium text-gray-700 mb-1">Pickup Date</label>
+                            <input type="date" id="pickup-date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label for="return-date" class="block text-sm font-medium text-gray-700 mb-1">Return Date</label>
+                            <input type="date" id="return-date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="pickup-location" class="block text-sm font-medium text-gray-700 mb-1">Pickup Location</label>
+                        <input type="text" id="pickup-location" required placeholder="Enter pickup location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+
+                    <div>
+                        <label for="special-requests" class="block text-sm font-medium text-gray-700 mb-1">Special Requests (Optional)</label>
+                        <textarea id="special-requests" rows="3" placeholder="Any special requirements?" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                    </div>
+
+                    <div id="total-price" class="my-4">
+                        <!-- Price will be calculated here -->
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg transition duration-300">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="JS/carAPI.js"></script>
+    <script src="JS/script.js"></script>
 </body>
 </html>
