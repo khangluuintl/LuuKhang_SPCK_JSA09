@@ -38,9 +38,25 @@
       const affEl = document.getElementById('affiliate-id');
       const tokenEl = document.getElementById('token');
 
-      baseEl.value = localStorage.getItem('api_base_url') || 'https://demandapi-sandbox.booking.com/3.2';
+      baseEl.value = localStorage.getItem('api_base_url') || 'http://localhost:3000/api';
       affEl.value = localStorage.getItem('affiliate_id') || '';
       tokenEl.value = localStorage.getItem('api_token') || '';
+
+      // Try to prefill affiliate id from local proxy /config (dev convenience)
+      (async () => {
+        try {
+          const cfgRes = await fetch('http://localhost:3000/config');
+          if (cfgRes.ok) {
+            const cfg = await cfgRes.json();
+            if (cfg && cfg.affiliate_id && !affEl.value) {
+              affEl.value = cfg.affiliate_id;
+            }
+          }
+        } catch (e) {
+          // ignore — proxy may not be running
+          console.debug('No local proxy config available', e.message);
+        }
+      })();
 
       document.getElementById('api-setup-form').addEventListener('submit', (e) => {
         e.preventDefault();
